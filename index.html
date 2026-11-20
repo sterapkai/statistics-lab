@@ -1,31 +1,22 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>統計的推測ラボ</title>
 
-<link rel="stylesheet"
-href="style.css">
+<link rel="stylesheet" href="style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 </head>
-
 <body>
 
 <header>
-
-<h1>📊統計的推測ラボ</h1>
-
-<p>50000人の母集団から標本抽出</p>
-
+<h1>📊 統計的推測ラボ</h1>
+<p>50000人の母集団から標本調査</p>
 </header>
 
 <div class="container">
@@ -39,34 +30,27 @@ href="style.css">
 <input id="sampleSize"
 type="number"
 value="100"
-min="1"
-max="50000">
+min="1">
 
 <br><br>
 
 性別
 
 <select id="gender">
-
 <option value="">全員</option>
 <option value="男性">男性</option>
 <option value="女性">女性</option>
-
 </select>
 
 <br><br>
 
 年齢
 
-<input id="minAge"
-type="number"
-value="0">
+<input id="minAge" type="number" value="0">
 
 ～
 
-<input id="maxAge"
-type="number"
-value="120">
+<input id="maxAge" type="number" value="120">
 
 歳
 
@@ -74,17 +58,11 @@ value="120">
 
 睡眠時間
 
-<input id="minSleep"
-type="number"
-value="0"
-step="0.1">
+<input id="minSleep" type="number" value="0" step="0.1">
 
 ～
 
-<input id="maxSleep"
-type="number"
-value="24"
-step="0.1">
+<input id="maxSleep" type="number" value="24" step="0.1">
 
 時間
 
@@ -92,17 +70,11 @@ step="0.1">
 
 労働学業時間
 
-<input id="minWork"
-type="number"
-value="0"
-step="0.1">
+<input id="minWork" type="number" value="0" step="0.1">
 
 ～
 
-<input id="maxWork"
-type="number"
-value="24"
-step="0.1">
+<input id="maxWork" type="number" value="24" step="0.1">
 
 時間
 
@@ -121,9 +93,7 @@ step="0.1">
 <h2>統計結果</h2>
 
 <div id="summary">
-
 CSV読込中...
-
 </div>
 
 </div>
@@ -140,11 +110,7 @@ CSV読込中...
 
 <option value="睡眠時間_h">睡眠時間</option>
 
-<option value="労働学業時間_h">
-
-労働学業時間
-
-</option>
+<option value="労働学業時間_h">労働学業時間</option>
 
 </select>
 
@@ -160,10 +126,43 @@ CSV読込中...
 
 <div class="card">
 
-<h2>
-抽出データ
-(最大100件表示)
-</h2>
+<h2>相関分析</h2>
+
+<select id="scatterType">
+
+<option value="age">
+
+身長 × 年齢
+
+</option>
+
+<option value="sleep">
+
+身長 × 睡眠時間
+
+</option>
+
+<option value="work">
+
+身長 × 労働学業時間
+
+</option>
+
+</select>
+
+<button onclick="drawRelationship()">
+
+更新
+
+</button>
+
+<canvas id="relationChart"></canvas>
+
+</div>
+
+<div class="card">
+
+<h2>標本データ一覧（最大100件）</h2>
 
 <div id="tableArea"></div>
 
