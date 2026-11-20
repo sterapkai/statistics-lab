@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
 
 <meta charset="UTF-8">
@@ -10,7 +9,8 @@ content="width=device-width, initial-scale=1">
 
 <title>統計的推測ラボ</title>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+href="style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -24,9 +24,7 @@ content="width=device-width, initial-scale=1">
 
 <h1>📊統計的推測ラボ</h1>
 
-<p>
-母集団50000人から標本調査
-</p>
+<p>50000人の母集団から標本抽出</p>
 
 </header>
 
@@ -34,52 +32,86 @@ content="width=device-width, initial-scale=1">
 
 <div class="card">
 
-<h2>標本抽出条件</h2>
+<h2>抽出条件</h2>
 
 標本数
 
-<input
-id="sampleSize"
+<input id="sampleSize"
 type="number"
 value="100"
-min="1">
+min="1"
+max="50000">
 
 <br><br>
 
 性別
 
 <select id="gender">
-<option value="">
-全員
-</option>
-<option value="男性">
-男性
-</option>
-<option value="女性">
-女性
-</option>
+
+<option value="">全員</option>
+<option value="男性">男性</option>
+<option value="女性">女性</option>
+
 </select>
 
 <br><br>
 
-最低年齢
+年齢
 
-<input
-id="minAge"
+<input id="minAge"
 type="number"
 value="0">
 
-最高年齢
+～
 
-<input
-id="maxAge"
+<input id="maxAge"
 type="number"
 value="120">
+
+歳
+
+<br><br>
+
+睡眠時間
+
+<input id="minSleep"
+type="number"
+value="0"
+step="0.1">
+
+～
+
+<input id="maxSleep"
+type="number"
+value="24"
+step="0.1">
+
+時間
+
+<br><br>
+
+労働学業時間
+
+<input id="minWork"
+type="number"
+value="0"
+step="0.1">
+
+～
+
+<input id="maxWork"
+type="number"
+value="24"
+step="0.1">
+
+時間
 
 <br><br>
 
 <button onclick="runSample()">
+
 標本抽出
+
 </button>
 
 </div>
@@ -88,7 +120,11 @@ value="120">
 
 <h2>統計結果</h2>
 
-<div id="summary"></div>
+<div id="summary">
+
+CSV読込中...
+
+</div>
 
 </div>
 
@@ -96,30 +132,26 @@ value="120">
 
 <h2>ヒストグラム</h2>
 
-対象
-
 <select id="histTarget">
 
-<option value="年齢">
-年齢
-</option>
+<option value="年齢">年齢</option>
 
-<option value="身長_cm">
-身長
-</option>
+<option value="身長_cm">身長</option>
 
-<option value="睡眠時間_h">
-睡眠時間
-</option>
+<option value="睡眠時間_h">睡眠時間</option>
 
 <option value="労働学業時間_h">
+
 労働学業時間
+
 </option>
 
 </select>
 
 <button onclick="updateHistogram()">
+
 更新
+
 </button>
 
 <canvas id="histChart"></canvas>
@@ -128,59 +160,10 @@ value="120">
 
 <div class="card">
 
-<h2>散布図</h2>
-
-X軸
-
-<select id="xAxis">
-
-<option value="年齢">年齢</option>
-
-<option value="身長_cm">身長</option>
-
-<option value="睡眠時間_h">
-睡眠時間
-</option>
-
-<option value="労働学業時間_h">
-労働学業時間
-</option>
-
-</select>
-
-Y軸
-
-<select id="yAxis">
-
-<option value="身長_cm">
-身長
-</option>
-
-<option value="年齢">
-年齢
-</option>
-
-<option value="睡眠時間_h">
-睡眠時間
-</option>
-
-<option value="労働学業時間_h">
-労働学業時間
-</option>
-
-</select>
-
-<button onclick="updateScatter()">
-更新
-</button>
-
-<canvas id="scatterChart"></canvas>
-
-</div>
-
-<div class="card">
-
-<h2>抽出された標本（最大100件表示）</h2>
+<h2>
+抽出データ
+(最大100件表示)
+</h2>
 
 <div id="tableArea"></div>
 
