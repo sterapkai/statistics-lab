@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+
 <title>統計的推測ラボ</title>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+href="style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 </head>
@@ -15,7 +22,9 @@
 <body>
 
 <header>
+
 <h1>📊 統計的推測ラボ</h1>
+
 </header>
 
 <div class="container">
@@ -24,16 +33,18 @@
 
 <h2>標本抽出条件</h2>
 
-<label>標本数</label>
+標本数
 
 <input
-type="number"
 id="sampleSize"
+type="number"
 value="100"
 min="1"
 max="50000">
 
 <br><br>
+
+性別
 
 <select id="gender">
 
@@ -56,28 +67,30 @@ max="50000">
 最低年齢
 
 <input
-type="number"
 id="minAge"
+type="number"
 value="0">
 
 最高年齢
 
 <input
-type="number"
 id="maxAge"
+type="number"
 value="120">
 
 <br><br>
 
 <button onclick="runSample()">
+
 標本抽出
+
 </button>
 
 </div>
 
 <div class="panel">
 
-<h2>結果</h2>
+<h2>統計結果</h2>
 
 <div id="result"></div>
 
@@ -93,7 +106,33 @@ value="120">
 
 <div class="panel">
 
-<h2>身長分布</h2>
+<h2>ヒストグラム</h2>
+
+<select id="histTarget">
+
+<option value="年齢">
+年齢
+</option>
+
+<option value="身長_cm">
+身長
+</option>
+
+<option value="睡眠時間_h">
+睡眠時間
+</option>
+
+<option value="労働学業時間_h">
+労働学業時間
+</option>
+
+</select>
+
+<button onclick="updateHistogram()">
+
+更新
+
+</button>
 
 <canvas id="histogram"></canvas>
 
@@ -101,7 +140,35 @@ value="120">
 
 <div class="panel">
 
-<h2>年齢×身長</h2>
+<h2>散布図</h2>
+
+X軸
+
+<select id="xAxis">
+
+<option value="年齢">年齢</option>
+<option value="身長_cm">身長</option>
+<option value="睡眠時間_h">睡眠時間</option>
+<option value="労働学業時間_h">労働学業時間</option>
+
+</select>
+
+Y軸
+
+<select id="yAxis">
+
+<option value="身長_cm">身長</option>
+<option value="年齢">年齢</option>
+<option value="睡眠時間_h">睡眠時間</option>
+<option value="労働学業時間_h">労働学業時間</option>
+
+</select>
+
+<button onclick="updateScatter()">
+
+更新
+
+</button>
 
 <canvas id="scatter"></canvas>
 
@@ -112,4 +179,5 @@ value="120">
 <script src="app.js"></script>
 
 </body>
+</html>
 </html>
