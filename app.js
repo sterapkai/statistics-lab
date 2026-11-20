@@ -1,172 +1,436 @@
-// =====================
-// グローバル変数
-// =====================
+let population=[];
 
-let population = [];
+let currentSample=[];
 
-let currentSample = [];
+let trueMeanHeight=0;
 
-let trueMeanHeight = 0;
+let histChart=null;
 
-let histogramChart = null;
-
-let scatterChart = null;
-
-
-// =====================
-// CSV読込
-// =====================
+let scatterChart=null;
 
 Papa.parse(
-    "statistics_population_50000.csv",
-    {
-        download: true,
-        header: true,
+"statistics_population_50000.csv",
+{
+download:true,
 
-        complete: function (results) {
+header:true,
 
-            population = results.data.filter(
-                p => p["ID"]
-            );
+complete:function(result){
 
-            calculatePopulationStats();
-
-        }
-    }
+population=
+result.data.filter(
+row=>row.ID
 );
 
+let total=0;
 
-// =====================
-// 母平均計算
-// =====================
+population.forEach(row=>{
 
-function calculatePopulationStats() {
+total+=
+Number(
+row.身長_cm
+);
 
-    let sum = 0;
+});
 
-    population.forEach(p => {
+trueMeanHeight=
+total/
+population.length;
 
-        sum += Number(
-            p["身長_cm"]
-        );
+console.log(
+"CSV読込完了",
+population.length
+);
 
-    });
+}
+}
+);
 
-    trueMeanHeight =
-        sum / population.length;
+function runSample(){
+
+if(population.length===0){
+
+alert(
+"CSV読込中です"
+);
+
+return;
 
 }
 
+let sampleSize=
 
-// =====================
-// 標本抽出
-// =====================
+Number(
+document.getElementById(
+"sampleSize"
+).value
+);
 
-function runSample() {
+let gender=
 
-    const sampleSize =
-        Number(
-            document.getElementById(
-                "sampleSize"
-            ).value
-        );
+document.getElementById(
+"gender"
+).value;
 
-    const gender =
-        document.getElementById(
-            "gender"
-        ).value;
+let minAge=
 
-    const minAge =
-        Number(
-            document.getElementById(
-                "minAge"
-            ).value
-        );
+Number(
+document.getElementById(
+"minAge"
+).value
+);
 
-    const maxAge =
-        Number(
-            document.getElementById(
-                "maxAge"
-            ).value
-        );
+let maxAge=
 
-    let filtered =
-        population.filter(p => {
+Number(
+document.getElementById(
+"maxAge"
+).value
+);
 
-            const age =
-                Number(
-                    p["年齢"]
-                );
+let filtered=
 
-            if (
-                gender &&
-                p["性別"] !== gender
-            ) {
-                return false;
-            }
+population.filter(r=>{
 
-            return (
-                age >= minAge &&
-                age <= maxAge
-            );
+let age=
+Number(r.年齢);
 
-        });
-
-    if (filtered.length === 0) {
-
-        alert(
-            "条件に一致するデータがありません"
-        );
-
-        return;
-    }
-
-    currentSample = [];
-
-    for (
-        let i = 0;
-        i < sampleSize;
-        i++
-    ) {
-
-        const randomIndex =
-            Math.floor(
-                Math.random() *
-                filtered.length
-            );
-
-        currentSample.push(
-            filtered[randomIndex]
-        );
-
-    }
-
-    showStatistics();
-
-    showTable();
-
-    drawHistogram(
-        document.getElementById(
-            "histTarget"
-        ).value
-    );
-
-    drawScatter(
-        document.getElementById(
-            "xAxis"
-        ).value,
-
-        document.getElementById(
-            "yAxis"
-        ).value
-    );
+if(
+gender!=="" &&
+r.性別!==gender
+){
+return false;
 }
 
+return (
+age>=minAge &&
+age<=maxAge
+);
 
-// =====================
-// 統計量表示
-// =====================
+});
 
-function showStatistics() {
+if(filtered.length===0){
 
-    
+alert(
+"条件に合うデータなし"
+);
+
+return;
+
+}
+
+currentSample=[];
+
+for(
+let i=0;
+i<sampleSize;
+i++
+){
+
+let index=
+
+Math.floor(
+Math.random()*
+filtered.length
+);
+
+currentSample.push(
+filtered[index]
+);
+
+}
+
+showSummary();
+
+showTable();
+
+updateHistogram();
+
+updateScatter();
+
+}
+
+function average(key){
+
+let total=0;
+
+currentSample.forEach(r=>{
+
+total+=
+Number(r[key]);
+
+});
+
+return total/currentSample.length;
+
+}
+
+function showSummary(){
+
+let avgAge=
+average("年齢");
+
+let avgHeight=
+average("身長_cm");
+
+let avgSleep=
+average("睡眠時間_h");
+
+let avgWork=
+average("労働学業時間_h");
+
+let error=
+
+Math.abs(
+avgHeight-
+trueMeanHeight
+);
+
+document.getElementById(
+"summary"
+).innerHTML=
+
+`
+平均年齢：
+${avgAge.toFixed(2)}歳
+
+<br><br>
+
+平均身長：
+${avgHeight.toFixed(2)}cm
+
+<br><br>
+
+平均睡眠時間：
+${avgSleep.toFixed(2)}時間
+
+<br><br>
+
+平均労働学業時間：
+${avgWork.toFixed(2)}時間
+
+<br><br>
+
+母平均身長：
+${trueMeanHeight.toFixed(2)}cm
+
+<br><br>
+
+誤差：
+${error.toFixed(2)}cm
+`;
+
+}
+
+function showTable(){
+
+let html=
+
+`
+<table>
+
+<tr>
+
+<th>ID</th>
+
+<th>名前</th>
+
+<th>性別</th>
+
+<th>年齢</th>
+
+<th>身長</th>
+
+<th>睡眠</th>
+
+<th>労働学業</th>
+
+</tr>
+
+`;
+
+currentSample
+.slice(0,100)
+.forEach(r=>{
+
+html+=`
+
+<tr>
+
+<td>${r.ID}</td>
+
+<td>${r.名前}</td>
+
+<td>${r.性別}</td>
+
+<td>${r.年齢}</td>
+
+<td>${r.身長_cm}</td>
+
+<td>${r.睡眠時間_h}</td>
+
+<td>${r.労働学業時間_h}</td>
+
+</tr>
+
+`;
+
+});
+
+html+="</table>";
+
+document.getElementById(
+"tableArea"
+).innerHTML=html;
+
+}
+
+function updateHistogram(){
+
+if(currentSample.length===0)
+return;
+
+let key=
+
+document.getElementById(
+"histTarget"
+).value;
+
+let bins={};
+
+currentSample.forEach(r=>{
+
+let value=
+Number(r[key]);
+
+let bin=
+Math.floor(value/5)*5;
+
+bins[bin]=
+(bins[bin]||0)+1;
+
+});
+
+if(histChart)
+histChart.destroy();
+
+histChart=
+new Chart(
+
+document.getElementById(
+"histChart"
+),
+
+{
+
+type:"bar",
+
+data:{
+
+labels:
+Object.keys(bins),
+
+datasets:[{
+
+label:key,
+
+data:
+Object.values(bins),
+
+backgroundColor:
+"steelblue"
+
+}]
+
+}
+
+}
+
+);
+
+}
+
+function updateScatter(){
+
+if(currentSample.length===0)
+return;
+
+let xKey=
+
+document.getElementById(
+"xAxis"
+).value;
+
+let yKey=
+
+document.getElementById(
+"yAxis"
+).value;
+
+let points=
+
+currentSample.map(r=>({
+
+x:Number(r[xKey]),
+
+y:Number(r[yKey])
+
+}));
+
+if(scatterChart)
+scatterChart.destroy();
+
+scatterChart=
+new Chart(
+
+document.getElementById(
+"scatterChart"
+),
+
+{
+
+type:"scatter",
+
+data:{
+
+datasets:[{
+
+label:
+`${xKey} × ${yKey}`,
+
+data:points,
+
+backgroundColor:
+"red"
+
+}]
+
+},
+
+options:{
+
+scales:{
+
+x:{
+title:{
+display:true,
+text:xKey
+}
+},
+
+y:{
+title:{
+display:true,
+text:yKey
+}
+}
+
+}
+
+}
+
+}
+
+);
+
+}
