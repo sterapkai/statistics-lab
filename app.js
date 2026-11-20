@@ -177,3 +177,121 @@ function runSample(){
     drawRelationship();
 
 }
+function drawRelationship(){
+
+    if(currentSample.length === 0){
+        return;
+    }
+
+    const type =
+    document.getElementById(
+        "scatterType"
+    ).value;
+
+    if(relationChart){
+        relationChart.destroy();
+    }
+
+    const ctx =
+    document.getElementById(
+        "relationChart"
+    );
+
+    let dataset = [];
+    let xlabel = "";
+
+    if(type === "age"){
+
+        dataset =
+        currentSample.map(row=>({
+
+            x:Number(row["年齢"]),
+
+            y:Number(row["身長_cm"])
+
+        }));
+
+        xlabel = "年齢";
+
+    }
+
+    else if(type === "sleep"){
+
+        dataset =
+        currentSample.map(row=>({
+
+            x:Number(row["睡眠時間_h"]),
+
+            y:Number(row["身長_cm"])
+
+        }));
+
+        xlabel = "睡眠時間";
+
+    }
+
+    else if(type === "work"){
+
+        dataset =
+        currentSample.map(row=>({
+
+            x:Number(row["労働学業時間_h"]),
+
+            y:Number(row["身長_cm"])
+
+        }));
+
+        xlabel = "労働学業時間";
+
+    }
+
+    relationChart =
+    new Chart(ctx,{
+
+        type:"scatter",
+
+        data:{
+
+            datasets:[{
+
+                label:"身長との関係",
+
+                data:dataset,
+
+                backgroundColor:"red"
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            scales:{
+
+                x:{
+
+                    title:{
+                        display:true,
+                        text:xlabel
+                    }
+
+                },
+
+                y:{
+
+                    title:{
+                        display:true,
+                        text:"身長(cm)"
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+}
