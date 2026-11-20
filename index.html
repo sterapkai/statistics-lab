@@ -10,8 +10,7 @@ content="width=device-width, initial-scale=1">
 
 <title>統計的推測ラボ</title>
 
-<link rel="stylesheet"
-href="style.css">
+<link rel="stylesheet" href="style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -23,13 +22,17 @@ href="style.css">
 
 <header>
 
-<h1>📊 統計的推測ラボ</h1>
+<h1>📊統計的推測ラボ</h1>
+
+<p>
+母集団50000人から標本調査
+</p>
 
 </header>
 
 <div class="container">
 
-<div class="panel">
+<div class="card">
 
 <h2>標本抽出条件</h2>
 
@@ -39,27 +42,22 @@ href="style.css">
 id="sampleSize"
 type="number"
 value="100"
-min="1"
-max="50000">
+min="1">
 
 <br><br>
 
 性別
 
 <select id="gender">
-
 <option value="">
 全員
 </option>
-
 <option value="男性">
 男性
 </option>
-
 <option value="女性">
 女性
 </option>
-
 </select>
 
 <br><br>
@@ -81,32 +79,24 @@ value="120">
 <br><br>
 
 <button onclick="runSample()">
-
 標本抽出
-
 </button>
 
 </div>
 
-<div class="panel">
+<div class="card">
 
 <h2>統計結果</h2>
 
-<div id="result"></div>
+<div id="summary"></div>
 
 </div>
 
-<div class="panel">
-
-<h2>抽出データ</h2>
-
-<div id="tableArea"></div>
-
-</div>
-
-<div class="panel">
+<div class="card">
 
 <h2>ヒストグラム</h2>
+
+対象
 
 <select id="histTarget">
 
@@ -129,16 +119,14 @@ value="120">
 </select>
 
 <button onclick="updateHistogram()">
-
 更新
-
 </button>
 
-<canvas id="histogram"></canvas>
+<canvas id="histChart"></canvas>
 
 </div>
 
-<div class="panel">
+<div class="card">
 
 <h2>散布図</h2>
 
@@ -147,9 +135,16 @@ X軸
 <select id="xAxis">
 
 <option value="年齢">年齢</option>
+
 <option value="身長_cm">身長</option>
-<option value="睡眠時間_h">睡眠時間</option>
-<option value="労働学業時間_h">労働学業時間</option>
+
+<option value="睡眠時間_h">
+睡眠時間
+</option>
+
+<option value="労働学業時間_h">
+労働学業時間
+</option>
 
 </select>
 
@@ -157,20 +152,37 @@ Y軸
 
 <select id="yAxis">
 
-<option value="身長_cm">身長</option>
-<option value="年齢">年齢</option>
-<option value="睡眠時間_h">睡眠時間</option>
-<option value="労働学業時間_h">労働学業時間</option>
+<option value="身長_cm">
+身長
+</option>
+
+<option value="年齢">
+年齢
+</option>
+
+<option value="睡眠時間_h">
+睡眠時間
+</option>
+
+<option value="労働学業時間_h">
+労働学業時間
+</option>
 
 </select>
 
 <button onclick="updateScatter()">
-
 更新
-
 </button>
 
-<canvas id="scatter"></canvas>
+<canvas id="scatterChart"></canvas>
+
+</div>
+
+<div class="card">
+
+<h2>抽出された標本（最大100件表示）</h2>
+
+<div id="tableArea"></div>
 
 </div>
 
@@ -179,5 +191,4 @@ Y軸
 <script src="app.js"></script>
 
 </body>
-</html>
 </html>
