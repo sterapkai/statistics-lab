@@ -1,436 +1,457 @@
-let population=[];
+let population = [];
 
-let currentSample=[];
+let currentSample = [];
 
-let trueMeanHeight=0;
+let trueMeanHeight = 0;
 
-let histChart=null;
+let histChart = null;
 
-let scatterChart=null;
+
 
 Papa.parse(
-"statistics_population_50000.csv",
-{
-download:true,
+    "statistics_population_50000.csv",
+    {
+        download: true,
+        header: true,
 
-header:true,
+        complete: function(results){
 
-complete:function(result){
+            population =
+                results.data.filter(
+                    row => row.ID
+                );
 
-population=
-result.data.filter(
-row=>row.ID
+            let total = 0;
+
+            population.forEach(row => {
+
+                total +=
+                Number(
+                    row["身長_cm"]
+                );
+
+            });
+
+            trueMeanHeight =
+                total /
+                population.length;
+
+            document
+            .getElementById(
+                "summary"
+            )
+            .innerHTML =
+
+            `
+            母集団読込完了
+
+            <br><br>
+
+            母集団人数：
+            ${population.length}人
+            `;
+        }
+    }
 );
 
-let total=0;
 
-population.forEach(row=>{
-
-total+=
-Number(
-row.身長_cm
-);
-
-});
-
-trueMeanHeight=
-total/
-population.length;
-
-console.log(
-"CSV読込完了",
-population.length
-);
-
-}
-}
-);
 
 function runSample(){
 
-if(population.length===0){
+    if(population.length===0){
 
-alert(
-"CSV読込中です"
-);
+        alert(
+            "CSV読込中です"
+        );
 
-return;
+        return;
+    }
+
+    const sampleSize =
+    Number(
+        document.getElementById(
+            "sampleSize"
+        ).value
+    );
+
+    const gender =
+    document.getElementById(
+        "gender"
+    ).value;
+
+    const minAge =
+    Number(
+        document.getElementById(
+            "minAge"
+        ).value
+    );
+
+    const maxAge =
+    Number(
+        document.getElementById(
+            "maxAge"
+        ).value
+    );
+
+    const minSleep =
+    Number(
+        document.getElementById(
+            "minSleep"
+        ).value
+    );
+
+    const maxSleep =
+    Number(
+        document.getElementById(
+            "maxSleep"
+        ).value
+    );
+
+    const minWork =
+    Number(
+        document.getElementById(
+            "minWork"
+        ).value
+    );
+
+    const maxWork =
+    Number(
+        document.getElementById(
+            "maxWork"
+        ).value
+    );
+
+
+
+    let filtered =
+
+    population.filter(row=>{
+
+        let age =
+        Number(row["年齢"]);
+
+        let sleep =
+        Number(row["睡眠時間_h"]);
+
+        let work =
+        Number(
+            row["労働学業時間_h"]
+        );
+
+        if(
+            gender &&
+            row["性別"]!==gender
+        ){
+            return false;
+        }
+
+        if(
+            age < minAge ||
+            age > maxAge
+        ){
+            return false;
+        }
+
+        if(
+            sleep < minSleep ||
+            sleep > maxSleep
+        ){
+            return false;
+        }
+
+        if(
+            work < minWork ||
+            work > maxWork
+        ){
+            return false;
+        }
+
+        return true;
+
+    });
+
+
+
+    if(filtered.length===0){
+
+        alert(
+            "条件に一致するデータがありません"
+        );
+
+        return;
+
+    }
+
+
+
+    currentSample = [];
+
+
+
+    for(
+        let i=0;
+        i<sampleSize;
+        i++
+    ){
+
+        const index =
+
+        Math.floor(
+            Math.random()
+            * filtered.length
+        );
+
+        currentSample.push(
+            filtered[index]
+        );
+
+    }
+
+
+
+    showSummary();
+
+    showTable();
+
+    updateHistogram();
 
 }
 
-let sampleSize=
 
-Number(
-document.getElementById(
-"sampleSize"
-).value
-);
-
-let gender=
-
-document.getElementById(
-"gender"
-).value;
-
-let minAge=
-
-Number(
-document.getElementById(
-"minAge"
-).value
-);
-
-let maxAge=
-
-Number(
-document.getElementById(
-"maxAge"
-).value
-);
-
-let filtered=
-
-population.filter(r=>{
-
-let age=
-Number(r.年齢);
-
-if(
-gender!=="" &&
-r.性別!==gender
-){
-return false;
-}
-
-return (
-age>=minAge &&
-age<=maxAge
-);
-
-});
-
-if(filtered.length===0){
-
-alert(
-"条件に合うデータなし"
-);
-
-return;
-
-}
-
-currentSample=[];
-
-for(
-let i=0;
-i<sampleSize;
-i++
-){
-
-let index=
-
-Math.floor(
-Math.random()*
-filtered.length
-);
-
-currentSample.push(
-filtered[index]
-);
-
-}
-
-showSummary();
-
-showTable();
-
-updateHistogram();
-
-updateScatter();
-
-}
 
 function average(key){
 
-let total=0;
+    let total = 0;
 
-currentSample.forEach(r=>{
+    currentSample.forEach(row=>{
 
-total+=
-Number(r[key]);
+        total +=
+        Number(row[key]);
 
-});
+    });
 
-return total/currentSample.length;
+    return total /
+    currentSample.length;
 
 }
+
+
 
 function showSummary(){
 
-let avgAge=
-average("年齢");
+    let avgAge =
+    average("年齢");
 
-let avgHeight=
-average("身長_cm");
+    let avgHeight =
+    average("身長_cm");
 
-let avgSleep=
-average("睡眠時間_h");
+    let avgSleep =
+    average("睡眠時間_h");
 
-let avgWork=
-average("労働学業時間_h");
+    let avgWork =
+    average(
+        "労働学業時間_h"
+    );
 
-let error=
+    let error =
 
-Math.abs(
-avgHeight-
-trueMeanHeight
-);
+    Math.abs(
+        avgHeight -
+        trueMeanHeight
+    );
 
-document.getElementById(
-"summary"
-).innerHTML=
 
-`
-平均年齢：
-${avgAge.toFixed(2)}歳
 
-<br><br>
+    document
+    .getElementById(
+        "summary"
+    )
+    .innerHTML =
 
-平均身長：
-${avgHeight.toFixed(2)}cm
+    `
+    標本数：
+    ${currentSample.length}人
 
-<br><br>
+    <br><br>
 
-平均睡眠時間：
-${avgSleep.toFixed(2)}時間
+    平均年齢：
+    ${avgAge.toFixed(2)}歳
 
-<br><br>
+    <br><br>
 
-平均労働学業時間：
-${avgWork.toFixed(2)}時間
+    平均身長：
+    ${avgHeight.toFixed(2)}cm
 
-<br><br>
+    <br><br>
 
-母平均身長：
-${trueMeanHeight.toFixed(2)}cm
+    平均睡眠時間：
+    ${avgSleep.toFixed(2)}時間
 
-<br><br>
+    <br><br>
 
-誤差：
-${error.toFixed(2)}cm
-`;
+    平均労働学業時間：
+    ${avgWork.toFixed(2)}時間
+
+    <br><br>
+
+    母平均身長：
+    ${trueMeanHeight.toFixed(2)}cm
+
+    <br><br>
+
+    誤差：
+    ${error.toFixed(2)}cm
+    `;
 
 }
+
+
 
 function showTable(){
 
-let html=
+    let html =
 
-`
-<table>
+    `
+    <table>
 
-<tr>
+    <tr>
 
-<th>ID</th>
+    <th>ID</th>
 
-<th>名前</th>
+    <th>名前</th>
 
-<th>性別</th>
+    <th>性別</th>
 
-<th>年齢</th>
+    <th>年齢</th>
 
-<th>身長</th>
+    <th>身長</th>
 
-<th>睡眠</th>
+    <th>睡眠</th>
 
-<th>労働学業</th>
+    <th>労働学業</th>
 
-</tr>
+    </tr>
+    `;
 
-`;
+    currentSample
+    .slice(0,100)
+    .forEach(row=>{
 
-currentSample
-.slice(0,100)
-.forEach(r=>{
+        html +=
 
-html+=`
+        `
+        <tr>
 
-<tr>
+        <td>${row["ID"]}</td>
 
-<td>${r.ID}</td>
+        <td>${row["名前"]}</td>
 
-<td>${r.名前}</td>
+        <td>${row["性別"]}</td>
 
-<td>${r.性別}</td>
+        <td>${row["年齢"]}</td>
 
-<td>${r.年齢}</td>
+        <td>${row["身長_cm"]}</td>
 
-<td>${r.身長_cm}</td>
+        <td>${row["睡眠時間_h"]}</td>
 
-<td>${r.睡眠時間_h}</td>
+        <td>${row["労働学業時間_h"]}</td>
 
-<td>${r.労働学業時間_h}</td>
+        </tr>
+        `;
 
-</tr>
+    });
 
-`;
+    html +=
+    "</table>";
 
-});
-
-html+="</table>";
-
-document.getElementById(
-"tableArea"
-).innerHTML=html;
+    document
+    .getElementById(
+        "tableArea"
+    )
+    .innerHTML =
+    html;
 
 }
+
+
 
 function updateHistogram(){
 
-if(currentSample.length===0)
-return;
+    if(
+        currentSample.length===0
+    ){
+        return;
+    }
 
-let key=
+    const key =
+    document.getElementById(
+        "histTarget"
+    ).value;
 
-document.getElementById(
-"histTarget"
-).value;
+    let bins = {};
 
-let bins={};
+    currentSample.forEach(row=>{
 
-currentSample.forEach(r=>{
+        let value =
+        Number(
+            row[key]
+        );
 
-let value=
-Number(r[key]);
+        let bin =
 
-let bin=
-Math.floor(value/5)*5;
+        Math.floor(
+            value / 5
+        ) * 5;
 
-bins[bin]=
-(bins[bin]||0)+1;
+        bins[bin] =
+        (bins[bin] || 0)
+        + 1;
 
-});
+    });
 
-if(histChart)
-histChart.destroy();
+    if(histChart){
 
-histChart=
-new Chart(
+        histChart.destroy();
 
-document.getElementById(
-"histChart"
-),
+    }
 
-{
+    histChart =
 
-type:"bar",
+    new Chart(
 
-data:{
+        document.getElementById(
+            "histChart"
+        ),
 
-labels:
-Object.keys(bins),
+        {
 
-datasets:[{
+            type:"bar",
 
-label:key,
+            data:{
 
-data:
-Object.values(bins),
+                labels:
+                Object.keys(
+                    bins
+                ),
 
-backgroundColor:
-"steelblue"
+                datasets:[{
 
-}]
+                    label:key,
 
-}
+                    data:
+                    Object.values(
+                        bins
+                    ),
 
-}
+                    backgroundColor:
+                    "steelblue"
 
-);
+                }]
 
-}
+            }
 
-function updateScatter(){
+        }
 
-if(currentSample.length===0)
-return;
-
-let xKey=
-
-document.getElementById(
-"xAxis"
-).value;
-
-let yKey=
-
-document.getElementById(
-"yAxis"
-).value;
-
-let points=
-
-currentSample.map(r=>({
-
-x:Number(r[xKey]),
-
-y:Number(r[yKey])
-
-}));
-
-if(scatterChart)
-scatterChart.destroy();
-
-scatterChart=
-new Chart(
-
-document.getElementById(
-"scatterChart"
-),
-
-{
-
-type:"scatter",
-
-data:{
-
-datasets:[{
-
-label:
-`${xKey} × ${yKey}`,
-
-data:points,
-
-backgroundColor:
-"red"
-
-}]
-
-},
-
-options:{
-
-scales:{
-
-x:{
-title:{
-display:true,
-text:xKey
-}
-},
-
-y:{
-title:{
-display:true,
-text:yKey
-}
-}
-
-}
-
-}
-
-}
-
-);
+    );
 
 }
